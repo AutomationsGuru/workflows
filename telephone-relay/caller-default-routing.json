@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "description": "Caller/default routing config for Telephone Relay Bridge v2. This opt-in caller surface prefers the persistent default route when TELEPHONE_RELAY_PERSISTENT_POOL_URL is set and keeps v1 fallback enabled.",
+  "default_channel": "default",
+  "fallback_v1_enabled": true,
+  "routes": {
+    "default": {
+      "kind": "persistent",
+      "pool_url_env": "TELEPHONE_RELAY_PERSISTENT_POOL_URL"
+    },
+    "v1": {
+      "kind": "v1"
+    }
+  }
+}

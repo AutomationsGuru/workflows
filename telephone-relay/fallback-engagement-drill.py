@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """Fallback-engagement drill for RPC Bridge v2.
 
-Points the caller-facing v2 CLI at an unavailable persistent pool URL while v1
-fallback is enabled. The drill passes only if v2 records persistent-route
-failure attempts, selects the v1 channel, and returns relay-check-passable v1
-evidence.
+Points the caller-facing default route wrapper at an unavailable persistent pool
+URL through routing config environment while v1 fallback is enabled. The drill
+passes only if v2 records persistent-route failure attempts, selects the v1
+channel, and returns relay-check-passable v1 evidence.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -56,11 +57,7 @@ class FallbackDrillResult:
 def run_v2(run_id: str, tenant_id: str, unavailable_url: str, timeout_s: int, max_attempts: int, out_dir: Path) -> int:
     command = [
         PYTHON,
-        "rpc_bridge_v2.py",
-        "--persistent-pool-url",
-        unavailable_url,
-        "--channel",
-        "default",
+        "caller-default-route.py",
         "--tenant-id",
         tenant_id,
         "--run-id",
@@ -73,9 +70,12 @@ def run_v2(run_id: str, tenant_id: str, unavailable_url: str, timeout_s: int, ma
         "0.05",
     ]
     (out_dir / "caller-command.json").write_text(json.dumps(command, indent=2), encoding="utf-8")
+    env = os.environ.copy()
+    env["TELEPHONE_RELAY_PERSISTENT_POOL_URL"] = unavailable_url
     proc = subprocess.run(
         command,
         cwd=ROOT,
+        env=env,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,

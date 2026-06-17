@@ -128,8 +128,10 @@ class PersistentPool:
         pool_size: int = 1,
         state_file: Path | None = None,
         state_ttl_s: int = 300,
+        agent2_fallback_model: str | None = None,
     ) -> None:
         self.agent2_model = agent2_model
+        self.agent2_fallback_model = agent2_fallback_model
         self.timeout_s = timeout_s
         self.run_root = run_root
         self.log_dir = run_root / "pool-logs"
@@ -139,6 +141,7 @@ class PersistentPool:
         self.started_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         self.run_count = 0
         self.startup: list[Any] = []
+        self.fallback_events: list[str] = []
         self.closed = False
         self.tenant_id = tenant_id
         self.pool_size = pool_size
@@ -187,8 +190,22 @@ class PersistentPool:
             save_state(self.state_file, self.state, self.state_ttl_s)
 
     def start(self) -> None:
+        self._start_agents()
+
+    def _start_agents(self) -> None:
+        self.startup = []
         for agent in self.agents.values():
             self.startup.append(agent.start())
+
+    def _switch_agent2_model(self, model: str, reason: str, tenant_id: str) -> None:
+        for agent in self.agents.values():
+            agent.stop()
+        self.agent2_model = model
+        self.fallback_events.append(reason)
+        self.agents = proto.build_agents(model, self.timeout_s, log_dir=self.log_dir)
+        self._start_agents()
+        self.ensure_tenant(tenant_id, self.pool_size, self.timeout_s, model)
+        self.persist_state()
 
     def status(self) -> dict[str, Any]:
         return {
@@ -198,6 +215,7 @@ class PersistentPool:
             "run_count": self.run_count,
             "pids": {name: agent.proc.pid if agent.proc else None for name, agent in self.agents.items()},
             "startup": [asdict(item) for item in self.startup],
+            "fallback_events": self.fallback_events,
             "state_file": str(self.state_file),
             "state_loaded": self.state_loaded,
             "state_load_reason": self.state_load_reason,
@@ -206,6 +224,47 @@ class PersistentPool:
             "sizes": self.state.sizes,
             "in_use": self.state.in_use,
         }
+
+    def _relay_once(self, run_id: str, tenant_id: str, started: float) -> dict[str, Any]:
+        run_dir = self.run_root / "runs" / run_id
+        proto.reset_handoff()
+        turns = [
+            self.agents["agent1"].prompt("g", "NEXT:Agent 2:g"),
+            self.agents["agent2"].prompt("g", "NEXT:Agent 3:gu"),
+            self.agents["agent3"].prompt("gu", "NEXT:Agent 2:gur"),
+            self.agents["agent2"].prompt("gur", "NEXT:Agent 1:guru"),
+            self.agents["agent1"].prompt("guru", "USER:guru — return verified."),
+        ]
+        agent2_output, agent3_output, agent1_output = proto.write_turn_outputs(run_dir, turns)
+        final_text = proto.HANDOFF.read_text(encoding="utf-8")
+        if "Current token: guru" not in final_text:
+            raise RuntimeError("final handoff did not contain Current token: guru")
+        self.run_count += 1
+        tenant = self.state.tenants[tenant_id]
+        tenant.run_count += 1
+        tenant.updated_at = time.time()
+        data = {
+            "status": "passed",
+            "run_id": run_id,
+            "tenant_id": tenant_id,
+            "run_count": self.run_count,
+            "pool_started_at": self.started_at,
+            "agent2_model": self.agent2_model,
+            "pids": {name: agent.proc.pid if agent.proc else None for name, agent in self.agents.items()},
+            "startup": [asdict(item) for item in self.startup],
+            "fallback_events": self.fallback_events,
+            "turns": [asdict(item) for item in turns],
+            "relay_elapsed_s": sum(turn.elapsed_s for turn in turns),
+            "total_elapsed_s": time.perf_counter() - started,
+            "agent2_output": str(agent2_output),
+            "agent3_output": str(agent3_output),
+            "agent1_output": str(agent1_output),
+        }
+        run_dir.mkdir(parents=True, exist_ok=True)
+        (run_dir / "persistent-pool-result.json").write_text(
+            json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+        return data
 
     def relay(self, run_id: str | None = None, tenant_id: str | None = None) -> dict[str, Any]:
         tenant_id = tenant_id or self.tenant_id
@@ -216,44 +275,16 @@ class PersistentPool:
             self.acquire(tenant_id, lease_id)
             try:
                 run_id = run_id or time.strftime("%Y%m%d-%H%M%S") + f"-{self.run_count + 1:03d}"
-                run_dir = self.run_root / "runs" / run_id
                 started = time.perf_counter()
-                proto.reset_handoff()
-                turns = [
-                    self.agents["agent1"].prompt("g", "NEXT:Agent 2:g"),
-                    self.agents["agent2"].prompt("g", "NEXT:Agent 3:gu"),
-                    self.agents["agent3"].prompt("gu", "NEXT:Agent 2:gur"),
-                    self.agents["agent2"].prompt("gur", "NEXT:Agent 1:guru"),
-                    self.agents["agent1"].prompt("guru", "USER:guru — return verified."),
-                ]
-                agent2_output, agent3_output, agent1_output = proto.write_turn_outputs(run_dir, turns)
-                final_text = proto.HANDOFF.read_text(encoding="utf-8")
-                if "Current token: guru" not in final_text:
-                    raise RuntimeError("final handoff did not contain Current token: guru")
-                self.run_count += 1
-                tenant = self.state.tenants[tenant_id]
-                tenant.run_count += 1
-                tenant.updated_at = time.time()
-                data = {
-                    "status": "passed",
-                    "run_id": run_id,
-                    "tenant_id": tenant_id,
-                    "run_count": self.run_count,
-                    "pool_started_at": self.started_at,
-                    "pids": {name: agent.proc.pid if agent.proc else None for name, agent in self.agents.items()},
-                    "startup": [asdict(item) for item in self.startup],
-                    "turns": [asdict(item) for item in turns],
-                    "relay_elapsed_s": sum(turn.elapsed_s for turn in turns),
-                    "total_elapsed_s": time.perf_counter() - started,
-                    "agent2_output": str(agent2_output),
-                    "agent3_output": str(agent3_output),
-                    "agent1_output": str(agent1_output),
-                }
-                run_dir.mkdir(parents=True, exist_ok=True)
-                (run_dir / "persistent-pool-result.json").write_text(
-                    json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
-                )
-                return data
+                try:
+                    return self._relay_once(run_id, tenant_id, started)
+                except Exception as exc:
+                    fallback_model = self.agent2_fallback_model
+                    if not fallback_model or fallback_model == self.agent2_model:
+                        raise
+                    reason = f"Agent 2 model {self.agent2_model} failed during relay: {exc}; switching to {fallback_model}"
+                    self._switch_agent2_model(fallback_model, reason, tenant_id)
+                    return self._relay_once(run_id, tenant_id, started)
             finally:
                 self.release(lease_id)
 
@@ -319,6 +350,7 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--timeout", type=int, default=240)
     parser.add_argument("--agent2-model", default="xai-oauth/grok-build-0.1")
+    parser.add_argument("--agent2-fallback-model", default="openai-codex/gpt-5.5")
     parser.add_argument("--tenant-id", default="default")
     parser.add_argument("--pool-size", type=int, default=1)
     parser.add_argument("--state-file", type=Path)
@@ -334,6 +366,7 @@ def main() -> int:
         pool_size=args.pool_size,
         state_file=args.state_file,
         state_ttl_s=args.state_ttl_s,
+        agent2_fallback_model=args.agent2_fallback_model,
     )
     pool.start()
     Handler.pool = pool

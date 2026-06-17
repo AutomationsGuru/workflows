@@ -21,7 +21,8 @@ Use `--port 0` to request an ephemeral port. The server prints a first-line JSON
 | `--host` | `127.0.0.1` | Bind address. Keep localhost unless explicitly testing remote access. |
 | `--port` | `8765` | HTTP port. `0` lets the OS choose. |
 | `--timeout` | `240` | Per-turn RPC timeout in seconds. Also stored in tenant state. |
-| `--agent2-model` | `xai-oauth/grok-build-0.1` | Agent 2 model for the pool. Agent 1 and 3 use the warm-pool prototype defaults. |
+| `--agent2-model` | `xai-oauth/grok-build-0.1` | Primary Agent 2 model for the pool. Agent 1 and 3 use the warm-pool prototype defaults. |
+| `--agent2-fallback-model` | `openai-codex/gpt-5.5` | Agent 2 model to switch to if the primary Agent 2 RPC model fails during relay. |
 | `--tenant-id` | `default` | Bootstrap tenant ID. Requests may override with `tenant_id`. |
 | `--pool-size` | `1` | Per-tenant hard cap for concurrent leases. |
 | `--state-file` | `<run_root>/pool-state.json` | Optional path for persisted logical pool state. |
@@ -151,6 +152,7 @@ Available live counters/gauges:
 | `/health` | `sizes` | Configured per-tenant cap. |
 | `/health` | `in_use` | Active leases. Non-empty while a relay is in flight. |
 | `/health` | `startup` | Warm-agent startup timings. |
+| `/health` | `fallback_events` | Agent 2 fallback switch reasons, if the primary model failed and the fallback model was used. |
 | `/health` | `pids` | Child process IDs for leak checks. |
 | `pool-scale-test.py` | CSV timing rows | Per-tenant acquire, cap-check, and release latency. |
 
