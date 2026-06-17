@@ -1,0 +1,18 @@
+# Python/cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Runtime/session artifacts
+**/sessions/
+**/rpc-runs/
+**/bridge-runs/
+**/bridge-v2-runs/
+**/diagnostics/
+**/persistent-pool-runs/
+
+# Temporary/local outputs
+*.tmp
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-os.local/schemas/context-cascade-packet.schema.json",
+  "title": "Context Cascade Packets",
+  "description": "Packet contracts for the Context Cascade layered-agent workflow.",
+  "$defs": {
+    "PathList": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "CommandResult": {
+      "type": "object",
+      "required": ["command", "result"],
+      "properties": {
+        "command": { "type": "string" },
+        "result": { "type": "string" },
+        "exit_code": { "type": ["integer", "null"] },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "ValidationResult": {
+      "type": "object",
+      "required": ["name", "status", "summary"],
+      "properties": {
+        "name": { "type": "string" },
+        "status": { "enum": ["passed", "failed", "blocked", "not_run"] },
+        "summary": { "type": "string" },
+        "evidence": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "MissionEnvelope": {
+      "type": "object",
+      "required": [
+        "type",
+        "mission_id",
+        "user_goal",
+        "definition_of_done",
+        "constraints",
+        "non_goals",
+        "repo_or_workspace",
+        "status_policy",
+        "escalation_conditions",
+        "evidence_requirements"
+      ],
+      "properties": {
+        "type": { "const": "MissionEnvelope" },
+        "mission_id": { "type": "string" },
+        "user_goal": { "type": "string" },
+        "definition_of_done": { "type": "array", "items": { "type": "string" } },
+        "constraints": { "type": "array", "items": { "type": "string" } },
+        "non_goals": { "type": "array", "items": { "type": "string" } },
+        "repo_or_workspace": { "type": "string" },
+        "status_policy": { "type": "string" },
+        "escalation_conditions": { "type": "array", "items": { "type": "string" } },
+        "evidence_requirements": { "type": "array", "items": { "type": "string" } },
+        "mission_spine_version": { "type": "string", "default": "1" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "WorkPacket": {
+      "type": "object",
+      "required": [
+        "type",
+        "packet_id",
+        "mission_id",
+        "objective",
+        "context_slice",
+        "allowed_paths",
+        "required_reads",
+        "allowed_commands",
+        "expected_changes",
+        "validation_required",
+        "stop_conditions",
+        "return_format"
+      ],
+      "properties": {
+        "type": { "const": "WorkPacket" },
+        "packet_id": { "type": "string" },
+        "mission_id": { "type": "string" },
+        "objective": { "type": "string" },
+        "context_slice": { "type": "string" },
+        "allowed_paths": { "$ref": "#/$defs/PathList" },
+        "required_reads": { "$ref": "#/$defs/PathList" },
+        "allowed_commands": { "type": "array", "items": { "type": "string" } },
+        "expected_changes": { "type": "array", "items": { "type": "string" } },
+        "validation_required": { "type": "array", "items": { "type": "string" } },
+        "stop_conditions": { "type": "array", "items": { "type": "string" } },
+        "return_format": { "type": "string" },
+        "mission_spine_excerpt": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "EvidencePacket": {
+      "type": "object",
+      "required": [
+        "type",
+        "packet_id",
+        "status",
+        "summary",
+        "changed_files",
+        "commands_run",
+        "validation_results",
+        "blockers",
+        "risks",
+        "next_recommendation"
+      ],
+      "properties": {
+        "type": { "const": "EvidencePacket" },
+        "packet_id": { "type": "string" },
+        "status": { "enum": ["completed", "partial", "blocked", "failed"] },
+        "summary": { "type": "string" },
+        "changed_files": { "$ref": "#/$defs/PathList" },
+        "commands_run": { "type": "array", "items": { "$ref": "#/$defs/CommandResult" } },
+        "validation_results": { "type": "array", "items": { "$ref": "#/$defs/ValidationResult" } },
+        "blockers": { "type": "array", "items": { "type": "string" } },
+        "risks": { "type": "array", "items": { "type": "string" } },
+        "next_recommendation": { "type": "string" },
+        "diff_summary": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "IntegrationPacket": {
+      "type": "object",
+      "required": [
+        "type",
+        "mission_id",
+        "completed_packets",
+        "current_state_summary",
+        "accepted_evidence",
+        "open_blockers",
+        "remaining_work",
+        "decision_needed",
+        "user_visible_status"
+      ],
+      "properties": {
+        "type": { "const": "IntegrationPacket" },
+        "mission_id": { "type": "string" },
+        "completed_packets": { "type": "array", "items": { "type": "string" } },
+        "current_state_summary": { "type": "string" },
+        "accepted_evidence": { "type": "array", "items": { "type": "string" } },
+        "open_blockers": { "type": "array", "items": { "type": "string" } },
+        "remaining_work": { "type": "array", "items": { "type": "string" } },
+        "decision_needed": { "type": ["string", "null"] },
+        "user_visible_status": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "UserUpdate": {
+      "type": "object",
+      "required": ["type", "status", "summary", "what_changed", "verification", "risks_or_questions", "next_step"],
+      "properties": {
+        "type": { "const": "UserUpdate" },
+        "status": { "enum": ["started", "in_progress", "blocked", "completed", "needs_decision"] },
+        "summary": { "type": "string" },
+        "what_changed": { "type": "array", "items": { "type": "string" } },
+        "verification": { "type": "array", "items": { "type": "string" } },
+        "risks_or_questions": { "type": "array", "items": { "type": "string" } },
+        "next_step": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/MissionEnvelope" },
+    { "$ref": "#/$defs/WorkPacket" },
+    { "$ref": "#/$defs/EvidencePacket" },
+    { "$ref": "#/$defs/IntegrationPacket" },
+    { "$ref": "#/$defs/UserUpdate" }
+  ]
+}
