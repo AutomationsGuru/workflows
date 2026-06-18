@@ -23,6 +23,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 PYTHON = sys.executable
+# Pi CLI model IDs include the provider route; this is not a raw OpenAI API model name.
+DEFAULT_AGENT2_MODEL = "openai-codex/gpt-5.5"
 
 
 @dataclass
@@ -269,7 +271,7 @@ def main() -> int:
     parser.add_argument("--timeout", type=int, default=300)
     parser.add_argument("--tenant-id", default="two-call-v2-persistent")
     parser.add_argument("--run-id", default="two-call-v2-persistent-" + time.strftime("%Y%m%d-%H%M%S"))
-    parser.add_argument("--agent2-model", default="xai-oauth/grok-build-0.1")
+    parser.add_argument("--agent2-model", default=DEFAULT_AGENT2_MODEL)
     args = parser.parse_args()
 
     started = time.perf_counter()

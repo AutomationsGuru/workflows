@@ -24,6 +24,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent
 PROTO_PATH = ROOT / "rpc-warm-pool-prototype.py"
 STATE_VERSION = 1
+# Pi CLI model IDs include the provider route; this is not a raw OpenAI API model name.
+DEFAULT_AGENT2_MODEL = "openai-codex/gpt-5.5"
 
 
 def load_proto() -> Any:
@@ -349,8 +351,8 @@ def main() -> int:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--timeout", type=int, default=240)
-    parser.add_argument("--agent2-model", default="xai-oauth/grok-build-0.1")
-    parser.add_argument("--agent2-fallback-model", default="openai-codex/gpt-5.5")
+    parser.add_argument("--agent2-model", default=DEFAULT_AGENT2_MODEL)
+    parser.add_argument("--agent2-fallback-model", default=DEFAULT_AGENT2_MODEL)
     parser.add_argument("--tenant-id", default="default")
     parser.add_argument("--pool-size", type=int, default=1)
     parser.add_argument("--state-file", type=Path)

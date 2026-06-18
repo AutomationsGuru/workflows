@@ -21,6 +21,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 POOL_PATH = ROOT / "persistent-warm-pool.py"
+# Pi CLI model IDs include the provider route; this is not a raw OpenAI API model name.
+DEFAULT_AGENT2_MODEL = "openai-codex/gpt-5.5"
 
 
 @dataclass
@@ -137,7 +139,7 @@ def main() -> int:
     try:
         module = load_pool_module()
         pool = module.PersistentPool(
-            agent2_model="xai-oauth/grok-build-0.1",
+            agent2_model=DEFAULT_AGENT2_MODEL,
             timeout_s=30,
             run_root=out_dir / "run-root",
             tenant_id="tenant-bootstrap",
@@ -148,7 +150,7 @@ def main() -> int:
 
         for index in range(args.tenants):
             tenant_id = f"tenant-{index:03d}"
-            pool.ensure_tenant(tenant_id, args.pool_size, 30, "xai-oauth/grok-build-0.1")
+            pool.ensure_tenant(tenant_id, args.pool_size, 30, DEFAULT_AGENT2_MODEL)
 
             lease_id = f"{tenant_id}:lease-primary"
             acquire_started = time.perf_counter_ns()

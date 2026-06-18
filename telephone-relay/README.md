@@ -37,7 +37,7 @@ Default model slots:
 | Agent | Default Pi model |
 | --- | --- |
 | Agent 1 | `minimax-oauth/MiniMax-M3` |
-| Agent 2 | `xai-oauth/grok-build-0.1` |
+| Agent 2 | `openai-codex/gpt-5.5` |
 | Agent 3 | `openai-codex/gpt-5.5` |
 
 Fast start for Agent 1:

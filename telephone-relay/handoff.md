@@ -3,7 +3,6 @@
 Current token: guru
 
 History:
-
 - Agent 1 received `g`, verified blank handoff, wrote `g`, sent `g` to Agent 2.
 - Agent 2 received `g`, verified `g` in handoff, wrote `gu`, sent `gu` to Agent 3.
 - Agent 3 received `gu`, verified `gu` in handoff, wrote `gur`, sent `gur` to Agent 2.

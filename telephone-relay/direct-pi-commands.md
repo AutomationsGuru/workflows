@@ -92,7 +92,7 @@ Agent 1 should run this monitored child command from the relay root:
 mkdir -p ./sessions/agent-1
 run_id=$(date +%Y%m%d%H%M%S)
 rm -f ./sessions/agent-1/agent2-output.txt ./sessions/agent-1/agent2-exit.txt
-(pi -p --approve --mode text --no-extensions --no-skills --tools read,bash,edit,write --session-id "telephone-relay-agent-2-$run_id" --session-dir ./sessions/agent-2 --name "telephone-relay-agent-2-$run_id" --model xai-oauth/grok-build-0.1 --append-system-prompt ./system-live.md --append-system-prompt ./profiles/agent-2.md "g" > ./sessions/agent-1/agent2-output.txt 2>&1; echo $? > ./sessions/agent-1/agent2-exit.txt) &
+(pi -p --approve --mode text --no-extensions --no-skills --tools read,bash,edit,write --session-id "telephone-relay-agent-2-$run_id" --session-dir ./sessions/agent-2 --name "telephone-relay-agent-2-$run_id" --model openai-codex/gpt-5.5 --append-system-prompt ./system-live.md --append-system-prompt ./profiles/agent-2.md "g" > ./sessions/agent-1/agent2-output.txt 2>&1; echo $? > ./sessions/agent-1/agent2-exit.txt) &
 child_pid=$!
 while kill -0 "$child_pid" 2>/dev/null; do
   current_token=$(grep -m1 '^Current token:' ./handoff.md || true)
@@ -145,7 +145,7 @@ If the autonomous child calls fail, run each session manually:
 
    ```powershell
    $runId = Get-Date -Format yyyyMMddHHmmss
-   pi -p --approve --mode text --no-extensions --no-skills --tools read,bash,edit,write --session-id "telephone-relay-agent-2-$runId" --session-dir .\sessions\agent-2 --name "telephone-relay-agent-2-$runId" --model xai-oauth/grok-build-0.1 --append-system-prompt .\system-live.md --append-system-prompt .\profiles\agent-2.md "g"
+   pi -p --approve --mode text --no-extensions --no-skills --tools read,bash,edit,write --session-id "telephone-relay-agent-2-$runId" --session-dir .\sessions\agent-2 --name "telephone-relay-agent-2-$runId" --model openai-codex/gpt-5.5 --append-system-prompt .\system-live.md --append-system-prompt .\profiles\agent-2.md "g"
    ```
 
 3. If needed, Agent 3 one-shot manually:
