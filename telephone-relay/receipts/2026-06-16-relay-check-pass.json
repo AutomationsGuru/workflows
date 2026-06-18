@@ -1,0 +1,91 @@
+{
+  "ok": true,
+  "root": "D:\\.agentos\\workflows\\telephone-relay",
+  "checks": [
+    {
+      "name": "handoff.exists",
+      "ok": true,
+      "detail": "D:\\.agentos\\workflows\\telephone-relay\\handoff.md"
+    },
+    {
+      "name": "handoff.final_token",
+      "ok": true,
+      "detail": "Current token: 'guru'; expected 'guru'"
+    },
+    {
+      "name": "handoff.ordered_history",
+      "ok": true,
+      "detail": "found 5/5 expected history lines in order"
+    },
+    {
+      "name": "child_output.sessions/agent-1/agent2-output.txt",
+      "ok": true,
+      "detail": "expected directive 'NEXT:Agent 1:guru'; size=18 chars"
+    },
+    {
+      "name": "child_output.sessions/agent-2/agent3-output.txt",
+      "ok": true,
+      "detail": "expected directive 'NEXT:Agent 2:gur'; size=17 chars"
+    },
+    {
+      "name": "child_exit.sessions/agent-1/agent2-exit.txt",
+      "ok": true,
+      "detail": "exit='0'; expected '0'"
+    },
+    {
+      "name": "child_exit.sessions/agent-2/agent3-exit.txt",
+      "ok": true,
+      "detail": "exit='0'; expected '0'"
+    },
+    {
+      "name": "session_id.latest_agent-2",
+      "ok": true,
+      "detail": "latest=2026-06-17T02-47-54-112Z_telephone-relay-agent-2-20260616204752.jsonl; id='telephone-relay-agent-2-20260616204752'; expected ^telephone-relay-agent-2-\\d{14}$"
+    },
+    {
+      "name": "session_id.no_fixed_child_command_in_latest_agent-2",
+      "ok": true,
+      "detail": "latest session contains no exact fixed child --session-id"
+    },
+    {
+      "name": "session_id.latest_agent-3",
+      "ok": true,
+      "detail": "latest=2026-06-17T02-48-18-071Z_telephone-relay-agent-3-20260616204816.jsonl; id='telephone-relay-agent-3-20260616204816'; expected ^telephone-relay-agent-3-\\d{14}$"
+    },
+    {
+      "name": "session_id.no_fixed_child_command_in_latest_agent-3",
+      "ok": true,
+      "detail": "latest session contains no exact fixed child --session-id"
+    },
+    {
+      "name": "static.no_fixed_child_session_id.profiles/agent-1.md",
+      "ok": true,
+      "detail": "no exact fixed child --session-id"
+    },
+    {
+      "name": "static.has_timestamped_child_id_pattern.profiles/agent-1.md",
+      "ok": true,
+      "detail": "timestamp run_id pattern present"
+    },
+    {
+      "name": "static.no_fixed_child_session_id.profiles/agent-2.md",
+      "ok": true,
+      "detail": "no exact fixed child --session-id"
+    },
+    {
+      "name": "static.has_timestamped_child_id_pattern.profiles/agent-2.md",
+      "ok": true,
+      "detail": "timestamp run_id pattern present"
+    },
+    {
+      "name": "static.no_fixed_child_session_id.direct-pi-commands.md",
+      "ok": true,
+      "detail": "no exact fixed child --session-id"
+    },
+    {
+      "name": "static.has_timestamped_child_id_pattern.direct-pi-commands.md",
+      "ok": true,
+      "detail": "timestamp run_id pattern present"
+    }
+  ]
+}
