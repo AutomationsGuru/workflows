@@ -10715,4 +10715,3 @@ The city of Veyr keeps records in nested districts, each with contradictory rumo
 Continuity reminder: Agent 1 owns the whole story bible; Agent 2 must packetize; Agent 3 must write only from bounded packets. Each scene should be useful even when read alone, but should also preserve global continuity.
 
 Local motif 1333: a bell, a wet stone stair, a witness who almost tells the truth, and a ledger entry that has been corrected twice.
-

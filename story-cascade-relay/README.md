@@ -1,6 +1,6 @@
 # Story Cascade Relay Smoke Tests
 
-**Status:** Design + runnable test spec v0  
+**Status:** Design + runnable test spec v0
 **Purpose:** Exercise multi-cycle Context Cascade behavior with a creative story task while preserving the coding/dev bridge lessons: file-path payloads, deterministic chunking, verifier-backed handoff, and parent-owned completion.
 
 ## Why story?

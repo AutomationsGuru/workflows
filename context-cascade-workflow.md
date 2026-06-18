@@ -1,7 +1,7 @@
 # Context Cascade Workflow
 
-**Status:** Design v0  
-**Date:** 2026-06-16  
+**Status:** Design v0
+**Date:** 2026-06-16
 **Purpose:** Define a serial layered-agent execution workflow for long-running coding tasks where multiple agents act as one apparent agent.
 
 ## Design note: stack size and focus lanes

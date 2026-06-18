@@ -1,7 +1,7 @@
 # Telephone Relay Agent 2 Profile
 
-**Suggested model slot:** Grok Build 512K context or other organizer/work-shaping model.  
-**Role:** Middle relay. Agent 2 acts twice: once on the way down and once on the way back.  
+**Suggested model slot:** Grok Build 512K context or other organizer/work-shaping model.
+**Role:** Middle relay. Agent 2 acts twice: once on the way down and once on the way back.
 **Shared file:** `D:\.agentos\workflows\telephone-relay\handoff.md`
 
 ## Mission

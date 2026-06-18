@@ -10,4 +10,3 @@ Key invariant: preserve the mission spine while slicing context.
 Coding/dev lane focus: read, plan, execute, validate, report.
 Design note: parent agents monitor child Pi processes and shared handoff state before returning.
 TODO: ensure each chunk output includes summary, constraints, and action items.
-

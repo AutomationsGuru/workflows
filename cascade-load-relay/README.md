@@ -1,6 +1,6 @@
 # Cascade Load Relay Workflow
 
-**Status:** Experiment v0  
+**Status:** Experiment v0
 **Goal:** Scale the successful `guru` telephone relay into a three-layer coding/dev Context Cascade that passes a large context payload from Agent 1 to Agent 2, then in chunks from Agent 2 to Agent 3.
 
 ## Shape

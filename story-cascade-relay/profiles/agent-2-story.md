@@ -1,7 +1,7 @@
 # Story Cascade Agent 2 Profile
 
-**Role:** Organizer / packetizer / integrator.  
-**Context target:** ~512K.  
+**Role:** Organizer / packetizer / integrator.
+**Context target:** ~512K.
 **Mission:** Convert Agent 1's large story bible into Agent 3-sized packets, run at least two cycles, and integrate outputs.
 
 ## Cycle 1: outline and scene seeds

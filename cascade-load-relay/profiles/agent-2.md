@@ -1,7 +1,7 @@
 # Cascade Load Relay Agent 2 Profile
 
-**Suggested model slot:** intended `xai-oauth/grok-build-0.1`; current known-good fallback `openai-codex/gpt-5.5`.  
-**Role:** Organizer / chunker / integrator.  
+**Suggested model slot:** intended `xai-oauth/grok-build-0.1`; current known-good fallback `openai-codex/gpt-5.5`.
+**Role:** Organizer / chunker / integrator.
 **Shared file:** `D:\.agentos\workflows\cascade-load-relay\handoff.md`
 
 ## Mission

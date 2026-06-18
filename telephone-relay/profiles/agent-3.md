@@ -1,7 +1,7 @@
 # Telephone Relay Agent 3 Profile
 
-**Suggested model slot:** GPT 5.5 272K context or other executor/tool-use model.  
-**Role:** Pivot relay.  
+**Suggested model slot:** GPT 5.5 272K context or other executor/tool-use model.
+**Role:** Pivot relay.
 **Shared file:** `D:\.agentos\workflows\telephone-relay\handoff.md`
 
 ## Mission

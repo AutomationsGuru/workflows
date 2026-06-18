@@ -1,7 +1,7 @@
 # Cascade Load Relay Agent 3 Profile
 
-**Suggested model slot:** `openai-codex/gpt-5.5` or other executor/tool-use model.  
-**Role:** Executor / per-chunk processor.  
+**Suggested model slot:** `openai-codex/gpt-5.5` or other executor/tool-use model.
+**Role:** Executor / per-chunk processor.
 **Shared file:** `D:\.agentos\workflows\cascade-load-relay\handoff.md`
 
 ## Mission

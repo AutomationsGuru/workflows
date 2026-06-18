@@ -1,7 +1,7 @@
 # Cascade Load Relay Agent 1 Profile
 
-**Suggested model slot:** `minimax-oauth/MiniMax-M3` or other large-context reasoner.  
-**Role:** Reasoner / user-facing anchor.  
+**Suggested model slot:** `minimax-oauth/MiniMax-M3` or other large-context reasoner.
+**Role:** Reasoner / user-facing anchor.
 **Shared file:** `D:\.agentos\workflows\cascade-load-relay\handoff.md`
 
 ## Mission

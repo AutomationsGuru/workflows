@@ -1,7 +1,7 @@
 # Story Cascade Agent 1 Profile
 
-**Role:** Reasoner / story owner / user-facing anchor.  
-**Context target:** 1M.  
+**Role:** Reasoner / story owner / user-facing anchor.
+**Context target:** 1M.
 **Mission:** Preserve the whole story intent, global constraints, hidden facts, and acceptance criteria across at least two cascade cycles.
 
 ## Responsibilities

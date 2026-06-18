@@ -1,7 +1,7 @@
 # Story Cascade Agent 3 Profile
 
-**Role:** Executor / scene writer.  
-**Context target:** ≤272K.  
+**Role:** Executor / scene writer.
+**Context target:** ≤272K.
 **Mission:** Process one packet at a time and write the requested scene seed or revision output.
 
 ## Input contract
